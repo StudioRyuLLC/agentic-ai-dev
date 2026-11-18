@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-contrast="normal" data-size="1" data-weight="normal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Namba After Midnight</title>
+<meta name="description" content="Missed the last train from Namba? The night is late but young. Ramen, karaoke, canal walks and the first train home.">
+<meta name="theme-color" content="#100F26">
+
+<!-- Favicon: dark circle, orange crescent moon, pink outline star -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23100F26'/%3E%3Cpath d='M38 12a20 20 0 1 0 14 34A16 16 0 0 1 38 12z' fill='%23F2A950'/%3E%3Cpath d='M44 14l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7z' fill='none' stroke='%23F23D91' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Tilt+Neon&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   Namba After Midnight — design tokens (design-standard.md)
+   ========================================================= */
+:root {
+  --dark: #100F26;
+  --red: #BF2A2A;
+  --light: #F2E4C9;
+  --orange: #F2A950;
+  --pink: #F23D91;
+  --white: #ffffff;
+  /* adjacent colors (PRD: allowed for contrast/support) */
+  --dark-2: #1B1A3A;      /* raised surface */
+  --dark-3: #2A2852;      /* borders / lines */
+  --light-muted: #CDBFA6; /* secondary text, 8.9:1 on dark */
+
+  /* semantic */
+  --bg: var(--dark);
+  --bg-raised: var(--dark-2);
+  --line: var(--dark-3);
+  --text: var(--light);
+  --text-muted: var(--light-muted);
+  --accent: var(--pink);
+  --accent-2: var(--orange);
+  --on-accent: var(--dark);
+  --focus: var(--white);
+
+  --t: 250ms ease-out;
+  --space: 1rem;
+  --maxw: 1140px;
+  --header-h: 4.25rem;
+  --ticker-h: 2.25rem;
+}
+
+/* High-contrast mode */
+html[data-contrast="high"] {
+  --bg: #000;
+  --bg-raised: #000;
+  --line: #fff;
+  --text: #fff;
+  --text-muted: #fff;
+  --accent: #FFEB3B;
+  --accent-2: #fff;
+  --on-accent: #000;
+  --focus: #FFEB3B;
+}
+
+/* Text controls */
+html[data-size="1"]   { font-size: 100%; }
+html[data-size="1.2"] { font-size: 120%; }
+html[data-size="1.4"] { font-size: 140%; }
+html[data-weight="bold"] body { font-weight: 700; }
+
+/* =========================================================
+   Base
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + var(--ticker-h) + 1rem); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Tilt Neon", system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  transition: background-color var(--t), color var(--t);
+  overflow-x: hidden;
+}
+html[data-lang="ja"] body,
+html[data-lang="ja"] button,
+html[data-lang="ja"] input { font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif; }
+html[data-lang="ja"] body { line-height: 1.9; }
+button, input { font: inherit; color: inherit; }
+
+html[data-lang="en"] .ja { display: none !important; }
+html[data-lang="ja"] .en { display: none !important; }
+
+h1, h2, h3 { line-height: 1.2; margin: 0 0 .5em; font-weight: 400; }
+html[data-weight="bold"] h1, html[data-weight="bold"] h2, html[data-weight="bold"] h3 { font-weight: 700; }
+p { margin: 0 0 1em; }
+a { color: var(--accent-2); transition: color var(--t); }
+a:hover { color: var(--accent); }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed; left: 1rem; top: -4rem; z-index: 200;
+  background: var(--accent); color: var(--on-accent); padding: .6rem 1rem; border-radius: 6px;
+  transition: top var(--t); text-decoration: none;
+}
+.skip-link:focus { top: 1rem; }
+
+.icon { width: 1.4em; height: 1.4em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.container { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: 1.25rem; }
+
+/* =========================================================
+   Header: sticky/fixed, transparent over hero, solid at 80px
+   ========================================================= */
+.site-header {
+  position: fixed; inset: 0 0 auto 0; z-index: 100;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--t), border-color var(--t), box-shadow var(--t);
+}
+.site-header.is-solid {
+  background: var(--bg);
+  border-bottom-color: var(--line);
+  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+}
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: var(--header-h); }
+.brand { display: flex; align-items: center; gap: .6rem; color: var(--text); text-decoration: none; font-size: 1.15rem; white-space: nowrap; }
+.brand:hover { color: var(--accent); }
+.brand svg { width: 2rem; height: 2rem; }
+.nav-links { display: none; list-style: none; margin: 0; padding: 0; gap: .25rem; }
+.nav-links a {
+  display: block; padding: .5rem .9rem; border-radius: 999px; color: var(--text); text-decoration: none;
+  border: 1px solid transparent; transition: background-color var(--t), color var(--t), border-color var(--t);
+}
+.nav-links a:hover { border-color: var(--accent); color: var(--accent); }
+.clock {
+  display: flex; align-items: center; gap: .45rem; padding: .3rem .8rem;
+  border: 1px solid var(--accent); border-radius: 999px; color: var(--accent);
+  font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 1rem;
+}
+.clock .icon { width: 1.1em; height: 1.1em; }
+.menu-btn {
+  display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem;
+  background: transparent; border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+  transition: border-color var(--t), color var(--t);
+}
+html[data-contrast="normal"] .menu-btn { border-color: var(--dark-3); }
+.menu-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mobile-menu {
+  display: none; list-style: none; margin: 0; padding: .5rem 1.25rem 1rem; background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.mobile-menu.is-open { display: block; }
+.mobile-menu a { display: block; padding: .7rem 0; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--line); }
+.mobile-menu a:hover { color: var(--accent); }
+
+/* Masthead ticker */
+.masthead {
+  display: flex; align-items: stretch; height: var(--ticker-h);
+  background: var(--red); color: var(--white); font-size: .95rem; overflow: hidden;
+}
+html[data-contrast="high"] .masthead { background: #000; border-block: 2px solid #fff; }
+.masthead-label {
+  display: flex; align-items: center; gap: .4rem; padding-inline: .9rem; flex: none;
+  background: var(--dark); color: var(--orange); white-space: nowrap;
+}
+html[data-contrast="high"] .masthead-label { color: #FFEB3B; }
+.ticker { flex: 1; overflow: hidden; position: relative; }
+.ticker-track { display: inline-flex; white-space: nowrap; height: 100%; align-items: center; animation: ticker 55s linear infinite; will-change: transform; }
+.ticker.is-paused .ticker-track, .ticker:hover .ticker-track, .ticker:focus-within .ticker-track { animation-play-state: paused; }
+.ticker-group { display: inline-flex; align-items: center; }
+.ticker-item { padding-inline: 1.4rem; display: inline-flex; gap: .6rem; align-items: center; }
+.ticker-item b { font-weight: inherit; color: var(--light); }
+html[data-contrast="high"] .ticker-item b { color: #FFEB3B; }
+.ticker-item::after { content: "★"; margin-left: 1.4rem; color: var(--orange); }
+html[data-contrast="high"] .ticker-item::after { color: #fff; }
+.ticker-pause {
+  flex: none; width: 2.5rem; display: flex; align-items: center; justify-content: center;
+  background: var(--dark); border: 0; cursor: pointer; color: var(--white); transition: color var(--t), background-color var(--t);
+}
+.ticker-pause:hover { color: var(--pink); }
+.ticker-pause .icon { width: 1.1em; height: 1.1em; }
+.ticker-pause .i-play { display: none; }
+.ticker.is-paused ~ .ticker-pause .i-play, .ticker-pause[aria-pressed="true"] .i-play { display: block; }
+.ticker-pause[aria-pressed="true"] .i-pause { display: none; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+
+/* =========================================================
+   Hero (parallax + line art)
+   ========================================================= */
+.hero {
+  position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: calc(var(--header-h) + var(--ticker-h) + 2rem) 1.25rem 14rem;
+  background: linear-gradient(180deg, #0a091c 0%, var(--dark) 45%, #241345 100%);
+  isolation: isolate;
+}
+html[data-contrast="high"] .hero { background: #000; }
+.layer { position: absolute; left: 0; right: 0; will-change: transform; pointer-events: none; }
+.layer svg { display: block; width: 100%; height: auto; }
+.layer-moon  { top: 6%; z-index: -3; }
+.layer-city  { bottom: -2%; z-index: -2; }
+.layer-bowl  { bottom: -3%; z-index: -1; display: flex; justify-content: center; }
+.layer-bowl svg { width: min(520px, 70vw); }
+.moon-wrap { width: min(1100px, 100%); margin-inline: auto; }
+
+.hero-content { position: relative; z-index: 2; max-width: 46rem; }
+.eyebrow { color: var(--accent-2); letter-spacing: .12em; text-transform: uppercase; font-size: .95rem; margin-bottom: 1rem; }
+html[data-lang="ja"] .eyebrow { letter-spacing: .2em; }
+.hero h1 {
+  font-size: clamp(2.2rem, 7vw, 4.6rem); color: var(--text); margin-bottom: .35em;
+  text-shadow: 0 0 .35em color-mix(in srgb, var(--accent) 70%, transparent), 0 0 1.1em color-mix(in srgb, var(--accent) 35%, transparent);
+}
+html[data-contrast="high"] .hero h1 { text-shadow: none; }
+.hero .lede { font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: var(--text); max-width: 36rem; margin-inline: auto; }
+.hero .kansai { color: var(--accent-2); font-size: 1rem; margin-top: 1.5rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem; padding: .8rem 1.6rem; border-radius: 999px;
+  background: var(--accent); color: var(--on-accent); text-decoration: none; border: 2px solid var(--accent);
+  margin-top: 1.5rem; transition: background-color var(--t), color var(--t), transform var(--t), box-shadow var(--t);
+}
+.btn:hover { background: transparent; color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242,61,145,.25); }
+
+/* falling stars / ramen */
+.fall-layer { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.faller { position: absolute; top: -10%; color: var(--orange); opacity: 0; animation: fall linear infinite; }
+.faller.pink { color: var(--pink); }
+.faller .icon { width: 100%; height: 100%; stroke-width: 1.5; }
+@keyframes fall {
+  0%   { transform: translate3d(0,-10vh,0) rotate(0); opacity: 0; }
+  10%  { opacity: .9; }
+  85%  { opacity: .9; }
+  100% { transform: translate3d(-18vw,110vh,0) rotate(200deg); opacity: 0; }
+}
+/* hero art micro animations */
+.steam path { stroke-dasharray: 6 10; animation: steam 3.2s linear infinite; }
+.steam path:nth-child(2) { animation-delay: -1s; }
+.steam path:nth-child(3) { animation-delay: -2s; }
+@keyframes steam { to { stroke-dashoffset: -64; } }
+.twinkle { animation: twinkle 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.twinkle:nth-child(2n) { animation-delay: -1.2s; }
+.twinkle:nth-child(3n) { animation-delay: -2.1s; }
+@keyframes twinkle { 50% { opacity: .25; transform: scale(.7); } }
+.neon-flicker { animation: flicker 4.5s steps(1) infinite; }
+@keyframes flicker { 0%, 92%, 96%, 100% { opacity: 1; } 94%, 98% { opacity: .35; } }
+.bowl-bob { animation: bob 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes bob { 50% { transform: translateY(-6px); } }
+
+/* =========================================================
+   Sections
+   ========================================================= */
+section { padding-block: clamp(3.5rem, 8vw, 6rem); position: relative; }
+.section-head { text-align: center; max-width: 40rem; margin: 0 auto 3rem; }
+.section-head h2 { font-size: clamp(1.8rem, 4.5vw, 2.8rem); color: var(--accent); }
+html[data-contrast="high"] .section-head h2 { color: #FFEB3B; }
+.section-head p { color: var(--text-muted); }
+.alt { background: var(--bg-raised); }
+html[data-contrast="high"] .alt { border-block: 2px solid #fff; }
+
+.grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+.card {
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 16px; padding: 1.5rem;
+  transition: transform var(--t), border-color var(--t), box-shadow var(--t);
+}
+.alt .card { background: var(--bg); }
+.card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(242,61,145,.15); }
+html[data-contrast="high"] .card { border-width: 2px; }
+.card .icon-lg { width: 3rem; height: 3rem; color: var(--accent-2); margin-bottom: .75rem; stroke-width: 1.5; }
+.card h3 { color: var(--text); font-size: 1.35rem; }
+.card p { color: var(--text-muted); margin-bottom: .6rem; }
+.tag { display: inline-block; font-size: .85rem; padding: .1rem .7rem; border: 1px solid var(--accent-2); color: var(--accent-2); border-radius: 999px; }
+.note { color: var(--text-muted); font-size: .95rem; }
+
+/* Eats / menu */
+.eats { display: grid; gap: 2rem; grid-template-columns: 1fr; align-items: start; }
+.shop { text-align: center; }
+.shop .sign {
+  display: inline-block; padding: .6rem 1.4rem; border: 2px solid var(--accent); color: var(--accent); border-radius: 10px;
+  font-size: 1.6rem; text-shadow: 0 0 .5em color-mix(in srgb, var(--accent) 60%, transparent);
+}
+html[data-contrast="high"] .shop .sign { text-shadow: none; }
+.shop p { color: var(--text-muted); margin-top: 1rem; }
+.shop svg { width: min(260px, 70%); margin: 1.5rem auto 0; display: block; color: var(--accent-2); }
+.menu { list-style: none; margin: 0; padding: 0; }
+.menu li { display: grid; grid-template-columns: 1fr auto; gap: .25rem 1rem; padding: 1rem 0; border-bottom: 1px dashed var(--line); transition: padding-left var(--t); }
+html[data-contrast="high"] .menu li { border-bottom-style: solid; }
+.menu li:hover { padding-left: .6rem; }
+.menu .name { color: var(--text); font-size: 1.2rem; }
+.menu .price { color: var(--accent-2); font-variant-numeric: tabular-nums; }
+.menu .desc { grid-column: 1 / -1; color: var(--text-muted); font-size: .95rem; }
+.menu h3 { font-size: 1rem; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin: 1.5rem 0 0; }
+.menu h3:first-child { margin-top: 0; }
+
+/* Train table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); }
+html[data-contrast="high"] .table-wrap { border-width: 2px; }
+table { width: 100%; border-collapse: collapse; min-width: 30rem; }
+caption { text-align: left; padding: 1rem 1.25rem; color: var(--text-muted); font-size: .95rem; }
+th, td { padding: .85rem 1.25rem; text-align: left; border-top: 1px solid var(--line); }
+th { color: var(--accent-2); font-weight: inherit; font-size: .95rem; letter-spacing: .06em; }
+td.time { color: var(--accent); font-size: 1.25rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+html[data-contrast="high"] td.time { color: #FFEB3B; }
+tbody tr { transition: background-color var(--t); }
+tbody tr:hover { background: var(--bg-raised); }
+tr.is-home td { background: color-mix(in srgb, var(--pink) 12%, transparent); }
+.pill { display: inline-block; padding: .05rem .6rem; border-radius: 999px; font-size: .85rem; background: var(--red); color: var(--white); }
+html[data-contrast="high"] .pill { background: #fff; color: #000; }
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.site-footer { background: #0a091c; border-top: 1px solid var(--line); padding: 2.5rem 0 6rem; text-align: center; color: var(--text-muted); font-size: 1rem; }
+html[data-contrast="high"] .site-footer { background: #000; border-top: 2px solid #fff; }
+.site-footer .container { display: flex; flex-direction: column; gap: .5rem; align-items: center; }
+
+/* =========================================================
+   Tools panel (left), jukebox (bottom-left), back-to-top (bottom-right)
+   ========================================================= */
+.tools { position: fixed; left: 0; top: 50%; transform: translateY(-50%); z-index: 90; display: flex; align-items: stretch; }
+.tools-toggle {
+  order: 2; align-self: center; width: 2.9rem; height: 3.4rem; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); border: 0; border-radius: 0 12px 12px 0;
+  display: flex; align-items: center; justify-content: center; transition: background-color var(--t), color var(--t);
+}
+.tools-toggle:hover { background: var(--accent-2); }
+.tools-panel {
+  order: 1; width: 0; overflow: hidden; visibility: hidden;
+  background: var(--bg-raised); border: 1px solid var(--line); border-left: 0; border-radius: 0 14px 14px 0;
+  transition: width var(--t), visibility var(--t);
+}
+html[data-contrast="high"] .tools-panel { background: #000; border: 2px solid #fff; border-left: 0; }
+.tools.is-open .tools-panel { width: min(17rem, calc(100vw - 3.5rem)); visibility: visible; }
+.tools-inner { width: min(17rem, calc(100vw - 3.5rem)); padding: 1rem 1.1rem; }
+.tools-inner h2 { font-size: 1rem; color: var(--accent-2); letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .6rem; }
+.tools-inner section { padding: 0 0 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.tools-inner section:last-child { border: 0; margin: 0; padding: 0; }
+.tool-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; font-size: 1rem; }
+.tool-row > .lbl { flex: 1; display: flex; align-items: center; gap: .5rem; }
+.chip {
+  min-width: 2.75rem; height: 2.75rem; padding: 0 .7rem; display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+  background: transparent; border: 1px solid var(--accent-2); color: var(--text); border-radius: 10px; cursor: pointer;
+  transition: background-color var(--t), color var(--t), border-color var(--t);
+}
+.chip:hover:not([aria-pressed="true"]) { border-color: var(--accent); color: var(--accent); }
+.chip[aria-pressed="true"], .chip[aria-checked="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.lang-group { display: flex; gap: .5rem; }
+.lang-group .chip { flex: 1; }
+
+.jukebox {
+  position: fixed; left: 1rem; bottom: 1rem; z-index: 90; display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+  max-width: calc(100vw - 6.5rem);
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 14px; padding: .4rem .5rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,.4); transition: border-color var(--t);
+}
+.jukebox:hover { border-color: var(--accent); }
+html[data-contrast="high"] .jukebox { background: #000; border: 2px solid #fff; }
+.jb-btn {
+  width: 2.75rem; height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  border-radius: 50%; border: 1px solid var(--accent-2); background: transparent; color: var(--text);
+  transition: background-color var(--t), color var(--t), border-color var(--t);
+}
+.jb-btn:hover:not([aria-pressed="true"]) { border-color: var(--accent); color: var(--accent); }
+.jb-btn[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.jb-btn .i-off { display: none; }
+.jb-btn[aria-pressed="false"] .i-on { display: none; }
+.jb-btn[aria-pressed="false"] .i-off { display: block; }
+.jb-skip { width: 2.25rem; height: 2.25rem; }
+.jb-skip .icon { width: 1.1em; height: 1.1em; }
+.jb-meta { display: none; flex-direction: column; line-height: 1.25; font-size: .85rem; max-width: 12rem; }
+.jb-meta .jb-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.jb-meta .jb-status { color: var(--text-muted); font-size: .78rem; }
+.jb-vol { display: flex; align-items: center; gap: .3rem; }
+.jb-vol input { width: 5.5rem; accent-color: var(--accent); height: 2.75rem; cursor: pointer; }
+
+.to-top {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 90; width: 3.25rem; height: 3.25rem;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); border: 2px solid var(--accent);
+  opacity: 0; visibility: hidden; transform: translateY(12px);
+  transition: opacity var(--t), transform var(--t), visibility var(--t), background-color var(--t), color var(--t);
+}
+.to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { background: var(--bg); color: var(--accent); }
+
+/* =========================================================
+   Responsive: <576 base; sm 576, md 768, lg 992, xl 1200, xxl 1400
+   ========================================================= */
+@media (min-width: 576px) {
+  .grid.cols { grid-template-columns: repeat(2, 1fr); }
+  .jb-meta { display: flex; }
+}
+@media (min-width: 768px) {
+  .eats { grid-template-columns: 5fr 7fr; gap: 3rem; }
+  .nav-links { display: flex; }
+  .menu-btn, .mobile-menu { display: none !important; }
+}
+@media (min-width: 992px) {
+  .grid.cols { grid-template-columns: repeat(3, 1fr); }
+  .container { padding-inline: 2rem; }
+}
+@media (min-width: 1200px) {
+  body { font-size: 1.1875rem; }
+  .eats { gap: 4.5rem; }
+}
+@media (min-width: 1400px) {
+  :root { --maxw: 1280px; }
+  .hero h1 { font-size: 5.2rem; }
+}
+@media (max-width: 575.98px) {
+  .hero { padding-inline: 3.5rem 1.25rem; }
+  .brand .brand-text { font-size: 1rem; }
+  .clock { padding: .25rem .6rem; font-size: .9rem; }
+  .masthead-label .txt { display: none; }
+  .jb-vol input { width: 4rem; }
+}
+
+/* =========================================================
+   Reduced motion
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+  .ticker { overflow-x: auto; }
+  .layer { transform: none !important; }
+  .fall-layer { display: none; }
+  .ticker-pause { display: none; }
+}
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#main"><span class="en">Skip to content</span><span class="ja">本文へスキップ</span></a>
+
+<!-- ===== Icon sprite (stroke line-art, currentColor) ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.8 6 6.5.8-4.8 4.5 1.3 6.4L12 17l-5.8 3.2 1.3-6.4L2.7 9.3l6.5-.8z"/></symbol>
+    <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3 11h18a9 8 0 0 1-18 0z"/><path d="M8 11c0-2 1.5-2 1.5-4M12 11c0-2 1.5-2 1.5-4M16 11c0-2 1.5-2 1.5-4"/><path d="M19 3l-6 6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></symbol>
+    <symbol id="i-access" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M5 8.5l7 1.5 7-1.5M12 10v5l-3.5 6M12 15l3.5 6"/></symbol>
+    <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/></symbol>
+    <symbol id="i-textsize" viewBox="0 0 24 24"><path d="M3 19l5-13 5 13M4.8 14.5h6.4M15 19l3-7.5 3 7.5M16 17h4"/></symbol>
+    <symbol id="i-weight" viewBox="0 0 24 24"><path d="M7 4h6a3.5 3.5 0 0 1 0 7H7zM7 11h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9.5h4l5-4v13l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></symbol>
+    <symbol id="i-speaker-off" viewBox="0 0 24 24"><path d="M4 9.5h4l5-4v13l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5l12 7.5-12 7.5z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 5v14M19 5l-10 7 10 7z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M18 5v14M5 5l10 7-10 7z"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V6M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-train" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 20l-2 2M15 20l2 2M9 14h.01M15 14h.01"/></symbol>
+    <symbol id="i-game" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M15.5 11.5h.01M18 13.5h.01"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></symbol>
+    <symbol id="i-canal" viewBox="0 0 24 24"><path d="M2 15c2.5-2 4.5-2 7 0s4.5 2 7 0 4-2 6 0M2 19.5c2.5-2 4.5-2 7 0s4.5 2 7 0 4-2 6 0"/><path d="M6 12V6M6 6a3 3 0 0 1 6 0M18 12V8"/></symbol>
+    <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M4 9h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h2.5a2.5 2.5 0 0 1 0 5H16M8 3c0 1.5 1.5 1.5 1.5 3M12 3c0 1.5 1.5 1.5 1.5 3"/></symbol>
+  </defs>
+</svg>
+
+<!-- ===== Header: nav + masthead ticker ===== -->
+<header class="site-header" id="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="Namba After Midnight – top">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#100F26" stroke="#F23D91" stroke-width="2"/><path d="M38 12a20 20 0 1 0 14 34A16 16 0 0 1 38 12z" fill="#F2A950"/><path d="M44 14l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7z" fill="none" stroke="#F23D91" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span class="brand-text"><span class="en">Namba After Midnight</span><span class="ja">なんば・真夜中</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#trains"><span class="en">Schedule</span><span class="ja">時刻表</span></a></li>
+        <li><a href="#eats"><span class="en">Eats</span><span class="ja">食べる</span></a></li>
+        <li><a href="#go"><span class="en">Where to go / What's open</span><span class="ja">行く・開いてる</span></a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <div class="clock" role="timer" aria-label="Current time">
+          <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+          <span id="clock" aria-hidden="true">--:--:--</span>
+        </div>
+        <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mobile-menu" type="button">
+          <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+          <span class="sr-only"><span class="en">Menu</span><span class="ja">メニュー</span></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+  <ul class="mobile-menu" id="mobile-menu">
+    <li><a href="#trains"><span class="en">Schedule</span><span class="ja">時刻表</span></a></li>
+    <li><a href="#eats"><span class="en">Eats</span><span class="ja">食べる</span></a></li>
+    <li><a href="#go"><span class="en">Where to go / What's open</span><span class="ja">行く・開いてる</span></a></li>
+  </ul>
+
+  <div class="masthead" role="region" aria-label="Upcoming trains">
+    <div class="masthead-label"><svg class="icon" aria-hidden="true"><use href="#i-train"/></svg><span class="txt"><span class="en">Next trains</span><span class="ja">始発情報</span></span></div>
+    <div class="ticker" id="ticker">
+      <div class="ticker-track" id="ticker-track"></div>
+    </div>
+    <button class="ticker-pause" id="ticker-pause" type="button" aria-pressed="false">
+      <svg class="icon i-pause" aria-hidden="true"><use href="#i-pause"/></svg>
+      <svg class="icon i-play" aria-hidden="true"><use href="#i-play"/></svg>
+      <span class="sr-only"><span class="en">Pause ticker</span><span class="ja">ティッカーを停止</span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ===== Hero ===== -->
+  <div class="hero" id="top">
+    <div class="fall-layer" id="fall-layer" aria-hidden="true"></div>
+
+    <div class="layer layer-moon" data-speed="0.15" aria-hidden="true">
+      <div class="moon-wrap">
+        <svg viewBox="0 0 1100 420" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M860 70a110 110 0 1 0 90 190A88 88 0 0 1 860 70z" fill="#F2A950" fill-opacity=".12" stroke="#F2A950" stroke-width="3"/>
+          <g stroke="#F23D91" stroke-width="2.5">
+            <path class="twinkle" d="M180 90l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z"/>
+            <path class="twinkle" d="M420 40l5 11 12 1.5-9 8 2 12-10-6-10 6 2-12-9-8 12-1.5z"/>
+            <path class="twinkle" d="M610 140l5 11 12 1.5-9 8 2 12-10-6-10 6 2-12-9-8 12-1.5z"/>
+            <path class="twinkle" d="M80 230l5 11 12 1.5-9 8 2 12-10-6-10 6 2-12-9-8 12-1.5z"/>
+            <path class="twinkle" d="M300 200l6 13 14 2-10 9 2 14-12-7-12 7 2-14-10-9 14-2z"/>
+          </g>
+          <g stroke="#F2E4C9" stroke-width="2"><path class="twinkle" d="M520 90v12M514 96h12"/><path class="twinkle" d="M750 30v12M744 36h12"/><path class="twinkle" d="M980 320v12M974 326h12"/><path class="twinkle" d="M40 120v12M34 126h12"/></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="layer layer-city" data-speed="0.3" aria-hidden="true">
+      <svg viewBox="0 0 1440 360" preserveAspectRatio="xMidYMax slice" fill="none" stroke-linejoin="round" stroke-linecap="round" style="min-height:220px">
+        <g stroke="#2A2852" stroke-width="2" fill="#100F26">
+          <path d="M0 360V240h90v-40h60v40h60V170h70v190zM260 360V130h110v230zM420 360V210h80v-60h70v60h60v150zM650 360V110h50V70h40v40h50v250zM840 360V190h120v170zM1010 360V150h80v-50h60v50h70v210zM1250 360V220h80v-50h60v50h50v190z"/>
+        </g>
+        <g stroke-width="3">
+          <path stroke="#F23D91" d="M262 130h106M650 110h140M1010 150h150"/>
+          <path stroke="#F2A950" d="M420 210h140M840 190h120M1250 220h140"/>
+          <path stroke="#BF2A2A" d="M0 240h90M210 170h60"/>
+        </g>
+        <!-- neon sign -->
+        <g class="neon-flicker">
+          <rect x="285" y="150" width="60" height="90" rx="6" stroke="#F23D91" stroke-width="3"/>
+          <path d="M300 175h30M300 195h30M300 215h30" stroke="#F2A950" stroke-width="3"/>
+        </g>
+        <g class="neon-flicker" style="animation-delay:-2s">
+          <rect x="860" y="215" width="80" height="60" rx="6" stroke="#F2A950" stroke-width="3"/>
+          <circle cx="900" cy="245" r="14" stroke="#F23D91" stroke-width="3"/>
+        </g>
+        <!-- windows -->
+        <g fill="#F2A950" stroke="none" opacity=".85">
+          <rect x="1030" y="190" width="10" height="10"/><rect x="1060" y="190" width="10" height="10"/><rect x="1030" y="230" width="10" height="10"/>
+          <rect x="440" y="250" width="10" height="10"/><rect x="480" y="290" width="10" height="10"/><rect x="670" y="170" width="10" height="10"/><rect x="710" y="210" width="10" height="10"/>
+        </g>
+        <g fill="#F23D91" stroke="none" opacity=".85">
+          <rect x="1090" y="260" width="10" height="10"/><rect x="520" y="230" width="10" height="10"/><rect x="680" y="250" width="10" height="10"/><rect x="1280" y="260" width="10" height="10"/><rect x="40" y="280" width="10" height="10"/>
+        </g>
+        <path d="M0 340h1440" stroke="#F23D91" stroke-width="2" opacity=".6"/>
+      </svg>
+    </div>
+
+    <div class="layer layer-bowl" data-speed="0.45" aria-hidden="true">
+      <svg viewBox="0 0 520 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <g class="bowl-bob">
+          <g class="steam" stroke="#F2E4C9" stroke-width="3" opacity=".8">
+            <path d="M200 120c-18-24 18-36 0-62"/>
+            <path d="M260 120c-18-24 18-36 0-70"/>
+            <path d="M320 120c-18-24 18-36 0-62"/>
+          </g>
+          <!-- chopsticks -->
+          <path d="M380 40L270 150M400 56L282 160" stroke="#F2A950" stroke-width="5"/>
+          <!-- bowl -->
+          <path d="M60 150h400a200 140 0 0 1-400 0z" fill="#BF2A2A" fill-opacity=".25" stroke="#F23D91" stroke-width="5"/>
+          <path d="M110 200h300" stroke="#F2A950" stroke-width="4" stroke-dasharray="2 14"/>
+          <path d="M200 285h120" stroke="#F23D91" stroke-width="5"/>
+          <!-- broth + noodles -->
+          <ellipse cx="260" cy="150" rx="200" ry="22" stroke="#F2A950" stroke-width="4"/>
+          <path d="M100 150c20-18 40 18 60 0s40 18 60 0 40 18 60 0 40 18 60 0 40 18 60 0" stroke="#F2E4C9" stroke-width="3"/>
+          <!-- toppings: egg, naruto, nori, scallion -->
+          <ellipse cx="190" cy="140" rx="30" ry="18" fill="#F2E4C9" fill-opacity=".15" stroke="#F2E4C9" stroke-width="3"/>
+          <ellipse cx="190" cy="140" rx="12" ry="8" stroke="#F2A950" stroke-width="3"/>
+          <circle cx="300" cy="138" r="22" stroke="#F23D91" stroke-width="3"/>
+          <path d="M300 138c-5-8 8-12 8-4s-8 10-8 4" stroke="#F23D91" stroke-width="2.5"/>
+          <path d="M360 120l36 6-6 44-36-6z" stroke="#2fc9a0" stroke-width="3" fill="#2fc9a0" fill-opacity=".12"/>
+          <path d="M246 118l8 6M262 112l6 8M226 124l7 4" stroke="#2fc9a0" stroke-width="3"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-content">
+      <p class="eyebrow"><span class="en">Namba Station · Osaka · Autumn</span><span class="ja">なんば駅 · 大阪 · 秋</span></p>
+      <h1>
+        <span class="en">Missed the last train? The night's still young.</span>
+        <span class="ja">終電、行ってもたん? 夜はまだこれからや。</span>
+      </h1>
+      <p class="lede">
+        <span class="en">Hang on. There's ramen to slurp, songs to sing and a canal to wander before the first train home. Keep going — the sun's not up yet.</span>
+        <span class="ja">もうちょい頑張りや。ラーメンも、カラオケも、川沿いの散歩も、始発までまだまだ楽しめるで。夜明けはもうすぐや。</span>
+      </p>
+      <p class="kansai">
+        <span class="en">Kansai-ben: <em>「ほな、行こか!」</em> “Well then, let's go!”</span>
+        <span class="ja">ほな、行こか! ええ夜になるで。</span>
+      </p>
+      <a class="btn" href="#eats"><svg class="icon" aria-hidden="true"><use href="#i-bowl"/></svg><span class="en">Find something to eat</span><span class="ja">まずは腹ごしらえ</span></a>
+    </div>
+  </div>
+
+  <!-- ===== Where to eat ===== -->
+  <section id="eats" class="alt" aria-labelledby="eats-h">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="eats-h"><span class="en">Where to eat</span><span class="ja">どこで食べる?</span></h2>
+        <p><span class="en">Real ramen after midnight is fulfilling and oddly refreshing. Here's a made-up favorite — open until the first train.</span><span class="ja">真夜中のラーメンは、満たされるのになぜかさっぱり。始発まで開いてる(という設定の)一軒をどうぞ。</span></p>
+      </div>
+      <div class="eats">
+        <div class="shop">
+          <div class="sign"><span class="en">Yoake Ramen</span><span class="ja">夜明けらーめん</span></div>
+          <p><span class="en">A six-seat counter tucked off the Dotonbori side streets. Steam on the glass, a ticket machine by the door, and a broth that's been going since dinner.</span><span class="ja">道頓堀の路地裏にある6席のカウンター。曇った窓、入口の券売機、夕方から炊き続けてる出汁。</span></p>
+          <p class="note"><span class="en">Fictional shop and prices, for illustration.</span><span class="ja">店名・価格は架空です。</span></p>
+          <svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M30 40h140v70H30z"/><path d="M20 40l10-20h140l10 20" stroke="#F23D91"/><path d="M45 40v-14M85 40v-14M125 40v-14M165 40v-14" stroke="#BF2A2A"/>
+            <path d="M60 75h80" stroke="#F23D91"/><path d="M75 90h50" stroke="#F23D91"/><path d="M60 60h80" stroke="#F23D91"/>
+          </svg>
+        </div>
+        <div>
+          <ul class="menu">
+            <h3><span class="en">Bowls</span><span class="ja">ラーメン</span></h3>
+            <li><span class="name"><span class="en">Tonkotsu</span><span class="ja">とんこつ</span></span><span class="price">¥950</span><span class="desc"><span class="en">Creamy pork-bone broth, thin firm noodles, chashu, scallion.</span><span class="ja">濃厚豚骨スープ、細麺、チャーシュー、ねぎ。</span></span></li>
+            <li><span class="name"><span class="en">Shoyu</span><span class="ja">しょうゆ</span></span><span class="price">¥880</span><span class="desc"><span class="en">Clear soy-based broth with a toasty, savory finish.</span><span class="ja">澄んだ醤油スープ。香ばしくてコクのある後味。</span></span></li>
+            <li><span class="name"><span class="en">Shio</span><span class="ja">しお</span></span><span class="price">¥880</span><span class="desc"><span class="en">Light salt broth. The one to order when you want to feel human again.</span><span class="ja">あっさり塩スープ。しんどい夜にちょうどええ。</span></span></li>
+            <li><span class="name"><span class="en">Miso</span><span class="ja">みそ</span></span><span class="price">¥980</span><span class="desc"><span class="en">Rich, warm and a little sweet, with corn and butter.</span><span class="ja">濃くて温かい味噌。コーンとバター付き。</span></span></li>
+            <h3><span class="en">Sides</span><span class="ja">サイド</span></h3>
+            <li><span class="name"><span class="en">Gyoza (6)</span><span class="ja">餃子(6個)</span></span><span class="price">¥420</span></li>
+            <li><span class="name"><span class="en">Ajitama egg</span><span class="ja">味玉</span></span><span class="price">¥120</span></li>
+            <li><span class="name"><span class="en">Extra noodles (kaedama)</span><span class="ja">替え玉</span></span><span class="price">¥150</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Where to go ===== -->
+  <section id="go" aria-labelledby="go-h">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="go-h"><span class="en">Where to go</span><span class="ja">どこに行く?</span></h2>
+        <p><span class="en">Four ways to spend the hours between last train and first. Hours are illustrative, so check before you walk over.</span><span class="ja">終電から始発までの過ごし方、4つ。営業時間は目安です。行く前に確認してな。</span></p>
+      </div>
+      <div class="grid cols">
+        <article class="card">
+          <svg class="icon icon-lg" aria-hidden="true"><use href="#i-game"/></svg>
+          <h3><span class="en">Game center</span><span class="ja">ゲームセンター</span></h3>
+          <p><span class="en">Claw machines, rhythm cabinets and a purikura booth that glows pink. Bring coins.</span><span class="ja">クレーンゲーム、音ゲー、ピンクに光るプリクラ。小銭持ってきや。</span></p>
+          <span class="tag"><span class="en">Open all night</span><span class="ja">24時間</span></span>
+        </article>
+        <article class="card">
+          <svg class="icon icon-lg" aria-hidden="true"><use href="#i-mic"/></svg>
+          <h3><span class="en">Karaoke bar</span><span class="ja">カラオケバー</span></h3>
+          <p><span class="en">Book a room, order a drink, and sing the city-pop you grew up on. Late-night packs are the best deal.</span><span class="ja">部屋とドリンクを頼んで、懐かしのシティポップを熱唱。フリータイムがお得やで。</span></p>
+          <span class="tag"><span class="en">Till 5:00</span><span class="ja">5時まで</span></span>
+        </article>
+        <article class="card">
+          <svg class="icon icon-lg" aria-hidden="true"><use href="#i-canal"/></svg>
+          <h3><span class="en">Canal walk</span><span class="ja">川沿い散歩</span></h3>
+          <p><span class="en">Stroll the Dotonbori canal while the neon reflects in the water. Quiet by 3 a.m., and free.</span><span class="ja">道頓堀川をぶらぶら。ネオンが水面に映って、夜中3時には静かで、しかも無料。</span></p>
+          <span class="tag"><span class="en">Always open</span><span class="ja">いつでも</span></span>
+        </article>
+        <article class="card">
+          <svg class="icon icon-lg" aria-hidden="true"><use href="#i-coffee"/></svg>
+          <h3><span class="en">Early kissaten</span><span class="ja">早朝の喫茶店</span></h3>
+          <p><span class="en">A retro coffee shop with a morning set: thick toast, boiled egg, strong coffee. Perfect before the first train.</span><span class="ja">レトロな喫茶店のモーニング。厚切りトースト、ゆで卵、濃いめのコーヒー。始発前にぴったり。</span></p>
+          <span class="tag"><span class="en">From 5:30</span><span class="ja">5時半〜</span></span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Train schedule ===== -->
+  <section id="trains" class="alt" aria-labelledby="trains-h">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="trains-h"><span class="en">The next train home</span><span class="ja">始発で帰ろ</span></h2>
+        <p><span class="en">From Namba toward Kawachinagano. Don't oversleep at the kissaten!</span><span class="ja">なんばから河内長野方面へ。喫茶店で寝過ごさんようにな!</span></p>
+      </div>
+      <div class="table-wrap" tabindex="0" role="region" aria-labelledby="trains-h">
+        <table>
+          <caption><span class="en">Sample timetable for illustration. Check the operator's official timetable before traveling.</span><span class="ja">サンプルの時刻表です。ご利用前に必ず鉄道会社の公式時刻表をご確認ください。</span></caption>
+          <thead><tr>
+            <th scope="col"><span class="en">Departs</span><span class="ja">発車</span></th>
+            <th scope="col"><span class="en">Destination</span><span class="ja">行き先</span></th>
+            <th scope="col"><span class="en">Type</span><span class="ja">種別</span></th>
+            <th scope="col"><span class="en">Platform</span><span class="ja">番線</span></th>
+          </tr></thead>
+          <tbody id="train-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <div class="container">
+    <p style="margin:0"><time id="footer-date" datetime=""></time></p>
+    <p style="margin:0">
+      <span class="en">Designed/Prompted by</span><span class="ja">デザイン/プロンプト:</span>
+      <a href="https://studioryu.com" target="_blank" rel="noopener noreferrer">StudioRyu, LLC<span class="sr-only"> <span class="en">(opens in a new tab)</span><span class="ja">(新しいタブで開きます)</span></span></a>
+    </p>
+  </div>
+</footer>
+
+<!-- ===== Left: hide/show tools ===== -->
+<aside class="tools" id="tools" aria-label="Accessibility and language tools">
+  <div class="tools-panel" id="tools-panel">
+    <div class="tools-inner">
+      <section aria-labelledby="a11y-h">
+        <h2 id="a11y-h"><span class="en">Accessibility</span><span class="ja">アクセシビリティ</span></h2>
+        <div class="tool-row">
+          <span class="lbl"><svg class="icon" aria-hidden="true"><use href="#i-contrast"/></svg><span class="en">High contrast</span><span class="ja">高コントラスト</span></span>
+          <button class="chip" id="t-contrast" type="button" aria-pressed="false"><span class="en">On</span><span class="ja">オン</span></button>
+        </div>
+        <div class="tool-row">
+          <span class="lbl"><svg class="icon" aria-hidden="true"><use href="#i-textsize"/></svg><span class="en">Text size</span><span class="ja">文字サイズ</span></span>
+        </div>
+        <div class="tool-row" role="group" aria-label="Text size">
+          <button class="chip" id="t-size-down" type="button" aria-label="Smaller text">A−</button>
+          <button class="chip" id="t-size-reset" type="button" aria-label="Default text size">A</button>
+          <button class="chip" id="t-size-up" type="button" aria-label="Larger text">A+</button>
+        </div>
+        <div class="tool-row">
+          <span class="lbl"><svg class="icon" aria-hidden="true"><use href="#i-weight"/></svg><span class="en">Bold text</span><span class="ja">太字</span></span>
+          <button class="chip" id="t-weight" type="button" aria-pressed="false"><span class="en">On</span><span class="ja">オン</span></button>
+        </div>
+      </section>
+      <section aria-labelledby="lang-h">
+        <h2 id="lang-h"><span class="en">Language</span><span class="ja">言語</span></h2>
+        <div class="lang-group" role="group" aria-label="Language">
+          <button class="chip" id="lang-en" type="button" lang="en" aria-pressed="true">English</button>
+          <button class="chip" id="lang-ja" type="button" lang="ja" aria-pressed="false">日本語</button>
+        </div>
+      </section>
+    </div>
+  </div>
+  <button class="tools-toggle" id="tools-toggle" type="button" aria-expanded="false" aria-controls="tools-panel">
+    <svg class="icon" aria-hidden="true"><use href="#i-access"/></svg>
+    <span class="sr-only"><span class="en">Show or hide accessibility and language tools</span><span class="ja">ツールの表示/非表示</span></span>
+  </button>
+</aside>
+
+<!-- ===== Bottom-left: jukebox ===== -->
+<div class="jukebox" role="group" aria-label="Jukebox">
+  <button class="jb-btn" id="jb-sound" type="button" aria-pressed="false">
+    <svg class="icon i-on" aria-hidden="true"><use href="#i-speaker"/></svg>
+    <svg class="icon i-off" aria-hidden="true"><use href="#i-speaker-off"/></svg>
+    <span class="sr-only"><span class="en">Sound on/off</span><span class="ja">音のオン/オフ</span></span>
+  </button>
+  <button class="jb-btn jb-skip" id="jb-prev" type="button"><svg class="icon" aria-hidden="true"><use href="#i-prev"/></svg><span class="sr-only"><span class="en">Previous track</span><span class="ja">前の曲</span></span></button>
+  <button class="jb-btn jb-skip" id="jb-next" type="button"><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg><span class="sr-only"><span class="en">Next track</span><span class="ja">次の曲</span></span></button>
+  <div class="jb-meta"><span class="jb-title" id="jb-title"></span><span class="jb-status" id="jb-status" aria-live="polite"></span></div>
+  <label class="jb-vol"><span class="sr-only"><span class="en">Volume</span><span class="ja">音量</span></span>
+    <input id="jb-vol" type="range" min="0" max="100" value="50">
+  </label>
+</div>
+
+<!-- ===== Bottom-right: back to top ===== -->
+<button class="to-top" id="to-top" type="button">
+  <svg class="icon" aria-hidden="true"><use href="#i-up"/></svg>
+  <span class="sr-only"><span class="en">Back to top</span><span class="ja">ページの先頭へ</span></span>
+</button>
+
+<script>
+(function () {
+  'use strict';
+  var doc = document.documentElement;
+  var $ = function (id) { return document.getElementById(id); };
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- storage (light per-viewer prefs; may throw) ---------- */
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  /* ---------- content data: trains (sample) ---------- */
+  var TRAINS = [
+    { time: '05:02', en: 'Kawachinagano', ja: '河内長野', typeEn: 'Local', typeJa: '各停', plat: '4', home: true },
+    { time: '05:12', en: 'Hashimoto', ja: '橋本', typeEn: 'Express', typeJa: '急行', plat: '5' },
+    { time: '05:21', en: 'Kawachinagano', ja: '河内長野', typeEn: 'Express', typeJa: '急行', plat: '4', home: true },
+    { time: '05:34', en: 'Kansai Airport', ja: '関西空港', typeEn: 'Airport Express', typeJa: '空港急行', plat: '7' },
+    { time: '05:41', en: 'Kawachinagano', ja: '河内長野', typeEn: 'Local', typeJa: '各停', plat: '4', home: true },
+    { time: '05:55', en: 'Hashimoto', ja: '橋本', typeEn: 'Express', typeJa: '急行', plat: '5' }
+  ];
+
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; }
+  function bi(en, ja) { return '<span class="en">' + en + '</span><span class="ja">' + ja + '</span>'; }
+
+  // table
+  var rows = $('train-rows');
+  TRAINS.forEach(function (t) {
+    var tr = el('tr', t.home ? 'is-home' : '');
+    tr.innerHTML =
+      '<td class="time">' + t.time + '</td>' +
+      '<td>' + bi(t.en, t.ja) + (t.home ? ' <span class="pill">' + bi('home', '帰宅') + '</span>' : '') + '</td>' +
+      '<td>' + bi(t.typeEn, t.typeJa) + '</td>' +
+      '<td>' + t.plat + '</td>';
+    rows.appendChild(tr);
+  });
+
+  // ticker (two identical groups for seamless loop; second is aria-hidden)
+  var track = $('ticker-track');
+  [false, true].forEach(function (hidden) {
+    var g = el('div', 'ticker-group');
+    if (hidden) g.setAttribute('aria-hidden', 'true');
+    TRAINS.forEach(function (t) {
+      g.appendChild(el('span', 'ticker-item', '<b>' + t.time + '</b> ' + bi(t.typeEn + ' → ' + t.en, t.ja + '行き ' + t.typeJa) + ' ' + bi('Platform ' + t.plat, t.plat + '番線')));
+    });
+    track.appendChild(g);
+  });
+
+  var ticker = $('ticker'), tp = $('ticker-pause');
+  tp.addEventListener('click', function () {
+    var p = tp.getAttribute('aria-pressed') !== 'true';
+    tp.setAttribute('aria-pressed', String(p));
+    ticker.classList.toggle('is-paused', p);
+  });
+
+  /* ---------- header: solid after 80px; back-to-top after 400px ---------- */
+  var header = $('site-header'), toTop = $('to-top');
+  var heroLayers = Array.prototype.slice.call(document.querySelectorAll('.layer'));
+  var ticking = false;
+  function onScroll() {
+    var y = window.pageYOffset;
+    header.classList.toggle('is-solid', y > 80);
+    toTop.classList.toggle('is-visible', y > 400);
+    if (!reduceMotion && y < window.innerHeight * 1.2) {
+      heroLayers.forEach(function (l) { l.style.transform = 'translate3d(0,' + (y * parseFloat(l.dataset.speed)).toFixed(1) + 'px,0)'; });
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    $('top').setAttribute('tabindex', '-1'); $('top').focus({ preventScroll: true });
+  });
+
+  /* ---------- mobile menu ---------- */
+  var mb = $('menu-btn'), mm = $('mobile-menu');
+  mb.addEventListener('click', function () {
+    var open = mm.classList.toggle('is-open');
+    mb.setAttribute('aria-expanded', String(open));
+  });
+  mm.addEventListener('click', function (e) { if (e.target.closest('a')) { mm.classList.remove('is-open'); mb.setAttribute('aria-expanded', 'false'); } });
+
+  /* ---------- clock ---------- */
+  var clock = $('clock');
+  function tick() { clock.textContent = new Date().toLocaleTimeString([], { hour12: false }); }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- falling stars & ramen ---------- */
+  var fall = $('fall-layer');
+  if (!reduceMotion) {
+    for (var i = 0; i < 16; i++) {
+      var f = el('span', 'faller' + (i % 3 === 0 ? ' pink' : ''));
+      var size = 14 + Math.random() * 22;
+      var ramen = i % 5 === 4;
+      f.style.cssText = 'left:' + (10 + Math.random() * 100) + '%;width:' + size + 'px;height:' + size + 'px;' +
+        'animation-duration:' + (9 + Math.random() * 10).toFixed(1) + 's;animation-delay:-' + (Math.random() * 14).toFixed(1) + 's';
+      f.innerHTML = '<svg class="icon"><use href="#' + (ramen ? 'i-bowl' : 'i-star') + '"/></svg>';
+      fall.appendChild(f);
+    }
+  }
+
+  /* ---------- tools panel ---------- */
+  var tools = $('tools'), tt = $('tools-toggle');
+  tt.addEventListener('click', function () {
+    var open = tools.classList.toggle('is-open');
+    tt.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && tools.classList.contains('is-open')) { tools.classList.remove('is-open'); tt.setAttribute('aria-expanded', 'false'); tt.focus(); }
+  });
+
+  // language
+  var DATE_LOCALE = { en: 'en-US', ja: 'ja-JP' };
+  var TITLES = { en: 'Namba After Midnight', ja: 'なんば・真夜中' };
+  function setLang(l) {
+    doc.setAttribute('data-lang', l); doc.lang = l; document.title = TITLES[l];
+    $('lang-en').setAttribute('aria-pressed', String(l === 'en'));
+    $('lang-ja').setAttribute('aria-pressed', String(l === 'ja'));
+    var now = new Date(), ft = $('footer-date');
+    ft.textContent = now.toLocaleDateString(DATE_LOCALE[l], { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    ft.setAttribute('datetime', now.toISOString().slice(0, 10));
+    renderTrack();
+    store.set('nam-lang', l);
+  }
+  $('lang-en').addEventListener('click', function () { setLang('en'); });
+  $('lang-ja').addEventListener('click', function () { setLang('ja'); });
+
+  // contrast / size / weight
+  function setContrast(on) { doc.setAttribute('data-contrast', on ? 'high' : 'normal'); $('t-contrast').setAttribute('aria-pressed', String(on)); store.set('nam-contrast', on ? '1' : '0'); }
+  $('t-contrast').addEventListener('click', function () { setContrast(doc.getAttribute('data-contrast') !== 'high'); });
+  var SIZES = ['1', '1.2', '1.4'];
+  function setSize(i) { i = Math.max(0, Math.min(SIZES.length - 1, i)); doc.setAttribute('data-size', SIZES[i]); store.set('nam-size', String(i)); }
+  function curSize() { return Math.max(0, SIZES.indexOf(doc.getAttribute('data-size'))); }
+  $('t-size-down').addEventListener('click', function () { setSize(curSize() - 1); });
+  $('t-size-up').addEventListener('click', function () { setSize(curSize() + 1); });
+  $('t-size-reset').addEventListener('click', function () { setSize(0); });
+  function setWeight(b) { doc.setAttribute('data-weight', b ? 'bold' : 'normal'); $('t-weight').setAttribute('aria-pressed', String(b)); store.set('nam-weight', b ? '1' : '0'); }
+  $('t-weight').addEventListener('click', function () { setWeight(doc.getAttribute('data-weight') !== 'bold'); });
+
+  /* ---------- jukebox ----------
+   Original music synthesized live with the Web Audio API (no audio files, nothing licensed).
+   Three city-pop-flavored loops: chord pad, bass, arpeggio, light drums. */
+var CH = { maj7: [0, 4, 7, 11, 14], m7: [0, 3, 7, 10, 14], d7: [0, 4, 7, 10, 14] };
+var TRACKS = [
+  { title: 'Midnight Neon',     bpm: 96,  kick: [0, 10],    arp: [0, 2, 4, 2, 1, 3, 4, 3], prog: [[53, 'maj7'], [52, 'm7'], [50, 'm7'], [55, 'd7']] },
+  { title: 'Last Train Groove', bpm: 108, kick: [0, 6, 10], arp: [0, 1, 2, 3, 4, 3, 2, 1], prog: [[48, 'maj7'], [57, 'm7'], [50, 'm7'], [55, 'd7']] },
+  { title: 'Dawn Kissaten',     bpm: 80,  kick: [0],        arp: [4, 2, 3, 1, 2, 0, 1, 2], prog: [[57, 'maj7'], [54, 'm7'], [47, 'm7'], [52, 'd7']] }
+];
+var BARS = 8;
+var snd = $('jb-sound'), statusEl = $('jb-status');
+var idx = 0, wantOn = false, volume = 0.5;
+var ac = null, master = null, timer = null, nextT = 0, stepN = 0, noiseBuf = null;
+var STATUS = { en: { playing: 'Playing', off: 'Sound off' }, ja: { playing: '再生中', off: 'サウンドオフ' } };
+function lang() { return doc.getAttribute('data-lang'); }
+function setStatus(k) { statusEl.dataset.k = k; statusEl.textContent = STATUS[lang()][k]; }
+function loadTrack() { $('jb-title').textContent = (idx + 1) + '. ' + TRACKS[idx].title; }
+
+function mtof(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+function tone(t, m, dur, type, gain) {
+  var o = ac.createOscillator(), g = ac.createGain();
+  o.type = type; o.frequency.value = mtof(m);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(gain, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05);
+}
+function kick(t) {
+  var o = ac.createOscillator(), g = ac.createGain();
+  o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+  g.gain.setValueAtTime(0.7, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.3);
+}
+function noise(t, dur, freq, type, gain) {
+  var s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  s.buffer = noiseBuf; f.type = type; f.frequency.value = freq;
+  g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + dur + 0.02);
+}
+function schedule(step, t) {
+  var tr = TRACKS[idx], s = step % 16, ch = tr.prog[Math.floor(step / 16) % 4], q = 60 / tr.bpm / 4, iv = CH[ch[1]];
+  if (s === 0) for (var i = 0; i < 4; i++) tone(t, ch[0] + 12 + iv[i], q * 15.5, 'sine', 0.05);
+  if (s === 0 || s === 6 || s === 10) tone(t, ch[0] - 12, q * 3, 'triangle', 0.3);
+  if (tr.kick.indexOf(s) > -1) kick(t);
+  if (s === 4 || s === 12) noise(t, 0.14, 1800, 'bandpass', 0.22);
+  if (s % 2 === 0) noise(t, 0.04, 7000, 'highpass', s % 4 === 2 ? 0.14 : 0.07);
+  if (s % 2 === 0) tone(t, ch[0] + 24 + iv[tr.arp[(s / 2) % 8] % iv.length] - 12, q * 2.2, 'triangle', 0.1);
+}
+function pump() {
+  while (nextT < ac.currentTime + 0.12) {
+    schedule(stepN, nextT);
+    nextT += 60 / TRACKS[idx].bpm / 4; stepN++;
+    if (stepN >= BARS * 16) { stepN = 0; idx = (idx + 1) % TRACKS.length; loadTrack(); }
+  }
+}
+function startEngine() {
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return false;
+  if (!ac) {
+    ac = new AC();
+    var len = ac.sampleRate, d; noiseBuf = ac.createBuffer(1, len, ac.sampleRate); d = noiseBuf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  }
+  ac.resume();
+  master = ac.createGain(); master.gain.value = volume * 0.6; master.connect(ac.destination);
+  stepN = 0; nextT = ac.currentTime + 0.05; timer = setInterval(pump, 25);
+  return true;
+}
+function stopEngine() {
+  clearInterval(timer); timer = null;
+  if (master) { var old = master; old.gain.setTargetAtTime(0, ac.currentTime, 0.05); setTimeout(function () { old.disconnect(); }, 500); master = null; }
+}
+function setSound(on) {
+  wantOn = on && true;
+  if (on) { wantOn = startEngine(); } else { stopEngine(); }
+  snd.setAttribute('aria-pressed', String(wantOn)); setStatus(wantOn ? 'playing' : 'off');
+}
+function step(d) { idx = (idx + d + TRACKS.length) % TRACKS.length; loadTrack(); if (wantOn) { stopEngine(); startEngine(); } }
+function setVolume(v) { volume = v; if (master) master.gain.value = v * 0.6; }
+snd.addEventListener('click', function () { setSound(!wantOn); });
+$('jb-prev').addEventListener('click', function () { step(-1); });
+$('jb-next').addEventListener('click', function () { step(1); });
+$('jb-vol').addEventListener('input', function (e) { setVolume(e.target.value / 100); store.set('nam-vol', e.target.value); });
+function renderTrack() { if (statusEl.dataset.k) setStatus(statusEl.dataset.k); }
+loadTrack(); setStatus('off');
+
+/* ---------- restore preferences ---------- */
+  if (store.get('nam-contrast') === '1') setContrast(true);
+  if (store.get('nam-weight') === '1') setWeight(true);
+  var sz = parseInt(store.get('nam-size'), 10); if (!isNaN(sz)) setSize(sz);
+  var vol = store.get('nam-vol'); if (vol !== null) { $('jb-vol').value = vol; setVolume(vol / 100); }
+  setLang(store.get('nam-lang') === 'ja' ? 'ja' : 'en'); // default: English (IP-based default is a future enhancement)
+})();
+</script>
+</body>
+</html>
